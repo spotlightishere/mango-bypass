@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"crypto/tls"
+	"github.com/logrusorgru/aurora"
 )
 
 var cert tls.Certificate
@@ -25,10 +26,10 @@ func main() {
 
 func logRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("[%s]: %s %s", r.UserAgent(), r.Method, r.URL)
+		log.Printf("%s %s", aurora.Blue(r.Method), aurora.Red(r.URL))
 		// TODO: remove header dumping
-		for name, test := range r.Header {
-			log.Printf("%s => %s", name, test)
+		for name, value := range r.Header {
+			log.Print(name, " ", aurora.Green("=>"), " ", value)
 		}
 		handler.ServeHTTP(w, r)
 	})
@@ -40,7 +41,7 @@ func unknownHandler(w http.ResponseWriter, r *http.Request) {
 	// First, add cert to tls handshake...
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{
-			Certificates: []tls.Certificate{cert},
+			Certificates:       []tls.Certificate{cert},
 			InsecureSkipVerify: true,
 		},
 	}
