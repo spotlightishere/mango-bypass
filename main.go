@@ -49,7 +49,9 @@ func unknownHandler(w http.ResponseWriter, r *http.Request) {
 		Transport: tr,
 	}
 	// then, mirror current server path...
-	response, err := client.Get(fmt.Sprintf("https://oss-auth.shop.wii.com%s", r.URL))
+	url := fmt.Sprintf("https://oss-auth.shop.wii.com%s", r.URL)
+	log.Print("Mirroring ", aurora.Green(url))
+	response, err := client.Get(url)
 	if err != nil {
 		panic(err)
 	}
