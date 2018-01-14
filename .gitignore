@@ -8,3 +8,5 @@ WII_NWC_1_CERT.p12
 # Random junk I have.
 *.wad
 shopping/*
+cache/*
+!cache/.gitkeep
