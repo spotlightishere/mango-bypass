@@ -11,6 +11,7 @@ import (
 	//"strings"
 	"path"
 	"os"
+	"strings"
 )
 
 var cert tls.Certificate
@@ -25,7 +26,7 @@ func main() {
 
 	http.HandleFunc("/", unknownHandler)
 	log.Println("Running...")
-	http.ListenAndServe(":80", logRequest(http.DefaultServeMux))
+	http.ListenAndServe(":8888", logRequest(http.DefaultServeMux))
 }
 
 func logRequest(handler http.Handler) http.Handler {
@@ -42,25 +43,27 @@ func logRequest(handler http.Handler) http.Handler {
 
 func unknownHandler(wiiWriter http.ResponseWriter, wiiRequest *http.Request) {
 	// First, we need to check if stuff has been "cached".
-	base := path.Ext(wiiRequest.URL.Path)
 	filename := path.Base(wiiRequest.URL.Path)
-	cachedPath := "cache/" + filename
-	switch base {
-	case ".png", ".gif", ".js", ".css":
-		if _, err := os.Stat(cachedPath); os.IsNotExist(err) {
-			// not cached! we'll get 'er next time
-			log.Printf("Looks like %s isn't cached, requesting.", aurora.Blue(filename))
-			break
-		} else {
-			// ok we're good lol
-			coolFile, err := ioutil.ReadFile(cachedPath)
-			if err != nil {
-				panic(err)
-			}
+	if filename == "/" {
+		filename = "index.html"
+	}
+	firstLayout := strings.Replace(wiiRequest.URL.Path, "/oss/oss/", "", -1)
+	layout := strings.Replace(firstLayout, "/"+filename, "", -1)
+	os.MkdirAll("cache/"+layout, os.ModePerm)
 
-			wiiWriter.Write(coolFile)
-			return
+	cachedPath := "cache/" + layout + "/" + filename
+	if _, err := os.Stat(cachedPath); os.IsNotExist(err) {
+		// not cached! we'll get 'er next time
+		log.Printf("Looks like %s isn't cached, requesting.", aurora.Blue(filename))
+	} else {
+		// ok we're good lol
+		coolFile, err := ioutil.ReadFile(cachedPath)
+		if err != nil {
+			panic(err)
 		}
+
+		wiiWriter.Write(coolFile)
+		return
 	}
 
 	// Not cached, so "proxy" from Nintendo.
@@ -111,32 +114,10 @@ func unknownHandler(wiiWriter http.ResponseWriter, wiiRequest *http.Request) {
 		panic(err)
 	}
 
-	// Check what we need to do.
-	switch base {
-	case ".jsp":
-		// grab our cool api
-		api, err := ioutil.ReadFile("cool-api.js")
-		if err != nil {
-			panic(err)
-		}
-
-		injectedBody := shopBody
-		injectedBody = append(injectedBody, []byte("<script>\n")...)
-		injectedBody = append(injectedBody, api...)
-		injectedBody = append(injectedBody, []byte("\n</script>")...)
-		injectedBody = append(injectedBody, shopBody...)
-		_, err = wiiWriter.Write(injectedBody)
-		if err != nil {
-			panic(err)
-		}
-		return
-	case ".png", ".gif", ".js", ".css":
-		// Cache them, by all means!
-		err := ioutil.WriteFile(cachedPath, shopBody, 777)
-		if err != nil {
-			panic(err)
-		}
-		break
+	// Cache them, by all means!
+	err = ioutil.WriteFile(cachedPath, shopBody, os.ModePerm)
+	if err != nil {
+		panic(err)
 	}
 
 	// then, literally mirror back!
