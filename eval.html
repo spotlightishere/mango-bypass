@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Eval</title>
+    <script>
+        const shop = new wiiShop();
+        const keyboard = new wiiKeyboard();
+        // ECommerceInterface object.
+        const ec = new ECommerceInterface();
+
+        // Mitigates timeouts.
+        const connected = shop.connecting;
+    </script>
+</head>
+<body onload="initialiseShop();const testMode = 'true';">
+<textarea id="evalInput" rows="5" style="width: 100%" onmousedown="keyboard.call( 1, 10, false, 'eval input');"></textarea>
+<textarea id="evalOutput" rows="16" style="width: 100%" readonly>eval output</textarea>
+<p>
+    <button onmousedown="window.history.go(-1); return false;">back</button>
+    <button onmousedown="document.getElementById('evalOutput').value = eval(document.getElementById('evalInput').value);" style="color: #008000;">eval</button>
+    <button onmousedown="document.getElementById('evalOutput').value = ec.getLog();">getECLog</button>
+    rev8 <!-- Makes sure that we know that the WSC is actually loading the right version. -->
+</p>
+<p id="shopConnect" style="display: none;">
+    stuff goes here.
+</p>
+</body>
+</html>

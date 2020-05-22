@@ -22,6 +22,9 @@ func main() {
 	cert = shopCert
 
 	http.HandleFunc("/", unknownHandler)
+	http.HandleFunc("/eval.html", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./eval.html")
+	})
 	log.Println("Running...")
 	http.ListenAndServe("192.168.3.135:8080", logRequest(http.DefaultServeMux))
 }
@@ -124,11 +127,13 @@ trace("error info: " + progress.errInfo);
 	// And inject our text area in as well.
 	shopBody = bytes.ReplaceAll(shopBody, []byte("</body>"), []byte(`
 	<script>
-		var elem = document.createElement('textarea');
-		elem.innerHTML = ec.getLog();
-		elem.setAttribute("rows", "15");
-		elem.setAttribute("cols", "75");
-		document.body.appendChild(elem);
+		var a = document.createElement('a');
+		a.setAttribute("href", "/eval.html");
+		var button = document.createElement('button');
+		button.setAttribute("type", "button");
+		button.innerHTML = "Eval";
+		a.appendChild(button);
+		document.body.appendChild(a);
 	</script>
 </body>
 `))
