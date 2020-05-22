@@ -3,7 +3,7 @@ good question lol
 
 # so what do???
 if you really wanna hax0r that ninty server, here's a cool how2:
-1. go to https://ariankordi.net/cert/
+1. go to https://larsenv.github.io/NintendoCerts/index.html
 2. download "Wii NWC Prod 1"
 3. copypasta wherever you'd like, i put it in this repo (since ignored)
 4.
