@@ -3,10 +3,8 @@ shop.key
 WII_NWC_1_CERT.p12
 .idea/*
 .DS_Store
-
+config.go
 
 # Random junk I have.
 *.wad
 shopping/*
-cache/*
-!cache/.gitkeep
