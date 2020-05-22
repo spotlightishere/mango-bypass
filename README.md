@@ -9,10 +9,10 @@ It connects to the Wii Shop Channel for you, and proxies GET/POST requests. This
 openssl pkcs12 -in WII_NWC_1_CERT.p12 -out shop.crt -clcerts -nokeys
 openssl pkcs12 -in WII_NWC_1_CERT.p12 -out shop.key -nocerts -nodes
 ```
-4. use magic, edit wii shop dol to have `https://oss-auth.shop.wii.com/` -> `http://oss-auth.shop.wii.com/`
-5. using similar magic, edit `00000002.app`'s U8 and edit the opera include file to have `http://*.shop.wii.com`
-6. grab yourself a dns server, bind `oss-auth.shop.wii.com` to wherever you wanna run this
-7. copy `config.go.example` to `config.co`, using similar as above (`oss-auth.shop.wii.com`) if you're editing DNS, or if you've changed CAs your own domain
+4. Create your own CA, or import the DST Root CA X3 from Opera 9 on Windows.
+5. Using similar magic, edit `00000002.app`'s U8 and edit the opera include file to have `http://*.base.proxy.domain`
+6. Find a way to have this domain route to this server. Good luck!
+7. Copy `config.go.example` to `config.go`, using similar as above (`base.proxy.domain`) as the base proxy domain
 8. fire this up
 9. ???
 10. potentially quite literally, profit
