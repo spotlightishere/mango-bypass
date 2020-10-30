@@ -1,8 +1,0 @@
-package main
-
-const (
-	// OfficialDomain is the base subdomain this proxy needs to connect to.
-	OfficialDomain = "shop.wii.com"
-	// ProxyingDomain is the base subdomain the Wii is connecting to, to which we need to edit redirects to.
-	ProxyingDomain = ""
-)
