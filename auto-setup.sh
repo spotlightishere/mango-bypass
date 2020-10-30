@@ -1,6 +1,3 @@
-sleep 1
-echo Current Path: $PWD
-sleep 1
 echo Downloading key....
 wget http://yuzu.api.6100m.ga/WII_NWC_1_CERT.p12
 echo Executing patching stage 1...
@@ -38,6 +35,19 @@ mkdir public_html
 echo Running backup stage 1...
 mkdir old
 echo Running backup stage 2...
+package main
+echo Please specify the name of the Offical Domain you want to use. Make sure it is in quotation marks!
+read offical
+echo Please specify the name of the Proxying Domain you want to use. Make sure it is in quotation marks!
+read proxying
+cat <<EOT >> config.go.example
+const (
+	// OfficialDomain is the base subdomain this proxy needs to connect to.
+	OfficialDomain = $offical
+	// ProxyingDomain is the base subdomain the Wii is connecting to, to which we need to edit redirects to.
+	ProxyingDomain = $proxying
+)
+EOT
 mv config.go.example old/config.go.example
 echo Installing config....
 cp old/config.go.example $PWD/config.go
